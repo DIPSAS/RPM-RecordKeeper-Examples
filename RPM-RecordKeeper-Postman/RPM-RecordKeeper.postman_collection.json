@@ -1,0 +1,177 @@
+{
+	"info": {
+		"_postman_id": "a0f241ae-bcd2-4fd9-a535-725c70adb040",
+		"name": "RPM-RecordKeeper",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23913750"
+	},
+	"item": [
+		{
+			"name": "OpenDips",
+			"item": [
+				{
+					"name": "AuthCheck",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "dips-subscription-key",
+								"value": "{{openDipsSubscriptionKey}}",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://api.dips.no/rpm-recordkeeper/api/v1/utils/AuthCheck",
+							"protocol": "https",
+							"host": [
+								"api",
+								"dips",
+								"no"
+							],
+							"path": [
+								"rpm-recordkeeper",
+								"api",
+								"v1",
+								"utils",
+								"AuthCheck"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RPM Alert",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "dips-subscription-key",
+								"value": "{{openDipsSubscriptionKey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.dips.no/rpm-recordkeeper/api/v1/rpm-alert/fhir-r4/bundle",
+							"protocol": "https",
+							"host": [
+								"api",
+								"dips",
+								"no"
+							],
+							"path": [
+								"rpm-recordkeeper",
+								"api",
+								"v1",
+								"rpm-alert",
+								"fhir-r4",
+								"bundle"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{bearer}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"let stsUrl = encodeURIComponent(pm.collectionVariables.get(\"stsUrl\"));",
+					"let clientId = encodeURIComponent(pm.collectionVariables.get(\"clientId\"));",
+					"let scopes = encodeURIComponent(pm.collectionVariables.get(\"scopes\"));",
+					"let jwkPrivateKey = encodeURIComponent(pm.collectionVariables.get(\"jwkPrivateKey\"));",
+					"pm.sendRequest(\"https://localhost:12600/bearer?stsUrl=\" + stsUrl + \"&clientId=\" + clientId + \"&scopes=\" + scopes + \"&jwkPrivateKey=\" + jwkPrivateKey, function (err, response) {",
+					"    function arrayBufferToString(buffer){",
+					"        var arr = new Uint8Array(buffer);",
+					"        var str = String.fromCharCode.apply(String, arr);",
+					"        if(/[\\u0080-\\uffff]/.test(str)){",
+					"            throw new Error(\"this string seems to contain (still encoded) multibytes\");",
+					"        }",
+					"        return str;",
+					"    }",
+					"",
+					"    let resp = arrayBufferToString(response.stream);",
+					"    pm.collectionVariables.set(\"bearer\", resp);",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "bearer",
+			"value": ""
+		},
+		{
+			"key": "openDipsSubscriptionKey",
+			"value": "Add your OpenDips subscription key here"
+		},
+		{
+			"key": "stsUrl",
+			"value": "https://helseid-sts.test.nhn.no"
+		},
+		{
+			"key": "clientId",
+			"value": "Add your HelseID client_id here"
+		},
+		{
+			"key": "scopes",
+			"value": "dips-dho:record-keeper/demo"
+		},
+		{
+			"key": "jwkPrivateKey",
+			"value": "Add your HelseID JWK private key here"
+		}
+	]
+}
